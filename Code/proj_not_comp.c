@@ -34,12 +34,18 @@
 #define READ_ARTICLE 0x23
 #define WRITE_ARTICLE 0x24
 #define COMMAND 0x25
+//ERR
+//define ADD_USER 0x26
+//Fixed by adding a "#" in front of the definition
 #define ADD_USER 0x26
 
 void logData(FILE *logfile, char *format, ...);
 int setupSock(FILE *logf, unsigned short port);
 int writeSock(int sock, char *buf, size_t len);
 int readSock(int sock, char *buf, size_t len);
+//ERR 
+//Spelling error fixed by adding a 'i' in for void
+//vod mainLoop(FILE *logf, int sock);
 void mainLoop(FILE *logf, int sock);
 void handleConnection(FILE *logfile, int sock);
 int userFunctions(FILE *logfile, int sock, char *user);
@@ -51,6 +57,9 @@ int writeSock(int sock, char *buf, size_t len)
 	ssize_t byteswrote = 0;
 	ssize_t ret = 0;
 
+	//WARN 
+	//fixed by deleting the ';' character 
+	//while (byteswrote < len);
 	while (byteswrote < len)
 	{
 		ret = send(sock, buf + byteswrote, len - byteswrote, 0);
@@ -110,8 +119,12 @@ void writeArticle(int sock, FILE *logfile, char *action)
 	// char* path = (char*)calloc(1024, sizeof(char));
 
 	strcpy(path, ARTICLEPATH);
+	//WARN
 	//this needs to be fixed for laer maybe for phase 2 line 114
-	strncat(path, &action[1], sizeof(path));
+	//strncat(path, &action[1], sizeof(path));
+	// This was fixed by adding a -1 to account for the null byte
+	// this is at line 117
+	strncat(path, &action[1], sizeof(path)-1);
 
 	logData(logfile, "user writing article: %s", path);
 
