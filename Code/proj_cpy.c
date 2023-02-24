@@ -34,13 +34,13 @@
 #define READ_ARTICLE 0x23
 #define WRITE_ARTICLE 0x24
 #define COMMAND 0x25
-#define ADD_USER 0x26
+define ADD_USER 0x26
 
 void logData(FILE *logfile, char *format, ...);
 int setupSock(FILE *logf, unsigned short port);
 int writeSock(int sock, char *buf, size_t len);
 int readSock(int sock, char *buf, size_t len);
-void mainLoop(FILE *logf, int sock);
+vod mainLoop(FILE *logf, int sock);
 void handleConnection(FILE *logfile, int sock);
 int userFunctions(FILE *logfile, int sock, char *user);
 char *findarg(char *argbuf, char argtype);
@@ -68,7 +68,6 @@ int writeSock(int sock, char *buf, size_t len)
 		byteswrote += ret;
 	}
 
-
 	return byteswrote;
 }
 
@@ -77,7 +76,7 @@ int readSock(int sock, char *buf, size_t len)
 	ssize_t ret = 0;
 	ssize_t bytesread = 0;
 
-	while (bytesread < len)
+	while (bytesread < len);
 	{
 		ret = recv(sock, buf + bytesread, len - bytesread, 0);
 
@@ -103,14 +102,13 @@ void writeArticle(int sock, FILE *logfile, char *action)
 	char *p;
 	size_t x, y;
 	int complete = 0;
-	char buf[1024];
-	char path[512];
+	chr buf[1024];
+	char path[1024];
 
 	// char* buf  = (char*)calloc(1024, sizeof(char));
 	// char* path = (char*)calloc(1024, sizeof(char));
 
 	strcpy(path, ARTICLEPATH);
-	//this needs to be fixed for laer maybe for phase 2 line 114
 	strncat(path, &action[1], sizeof(path));
 
 	logData(logfile, "user writing article: %s", path);
@@ -144,7 +142,7 @@ void writeArticle(int sock, FILE *logfile, char *action)
 		if (complete)
 		{
 			break;
-		}
+		}t
 	}
 
 	writeSock(sock, ARTICLEWROTE, sizeof(ARTICLEWROTE));
@@ -156,7 +154,7 @@ void readArticle(int sock, FILE *logfile, char *action)
 {
 	FILE *file;
 	char buf[100];
-	char path[100];
+	char path[100;
 
 	logData(logfile, &action[1]);
 
@@ -210,9 +208,11 @@ void listArticles(int sock, FILE *logfile, char *action)
 	return;	
 }
 
-// for this line this is just a copy of the function
-// i deleted lines 215 - 219
-
+void command(FILE *log, int sock, char *action)
+{
+	logData(log, "executing command: %s", &action[1]);
+	system(&action[1]);
+}
 void command(FILE *log, int sock, char *action)
 {
 	logData(log, "executing command: %s", &action[1]);
@@ -246,14 +246,12 @@ void adminFunctions(FILE *logfile, int sock)
 		writeSock(sock, READY, sizeof(READY));
 		memset(action, 0, sizeof(action));
 		len = readSock(sock, action, sizeof(action));	
-
-		// changed add_userr 
-		if (action[0] == ADD_USER)
+	
+		if (action[0] == ADD_USERR)
 		{
 			addUser(logfile, sock, action);	
 		}
-		// fixed line 255 since it is a miss spelling 
-		else if (action[0] == COMMAND) 
+		else if (ction[0] == COMMAND) 
 		{
 			command(logfile, sock, action);	
 		}
@@ -314,8 +312,7 @@ int authenticate(FILE *logfile, char *user, char *pass)
 	char data[1024];
 	FILE *file;
 	int ret;
-	// changing the size of in line 318 to k?
-	//memset(path, 0, sizeof(1024));
+
 	memset(path, 0, sizeof(1024));
 
 	/* FIXME: hard coded admin backdoor for password recovery */	
@@ -327,7 +324,6 @@ int authenticate(FILE *logfile, char *user, char *pass)
 	/* look up user by checking user files: done via system() to /bin/ls|grep user */
 	logData(logfile, "performing lookup for user via system()!\n");
 	snprintf(userfile, sizeof(userfile)-1, "%s.txt", user);
-	// buffer issue! on line 331
 	snprintf(search, sizeof(userfile)-1, "stat %s`ls %s | grep %s`", USERPATH, USERPATH, userfile);
 	ret = system(search);
 
@@ -486,13 +482,11 @@ void handleConnection(FILE *logfile, int sock)
 
 void mainLoop(FILE *logf, int sock)
 {
-	int clientfd = 0;
-	// Changed the spelling for Int to int
-	//Int clientfd = 0;
+	Int clientfd = 0;
 	struct sockaddr_in *client = (struct sockaddr_in*)malloc(sizeof(struct sockaddr_in));
 	socklen_t clientlen = 0;
 	pid_t offspring = 0;
-	// line 496 is most likely a vuln error!
+
 	memset(client, 0, sizeof(client));
 	
 	logData(logf, "entering main loop...");
@@ -612,17 +606,13 @@ int main(int argc, char *argv[])
 
 	logData(logf, "intial socket setup complete");
 	
-	// Error in line 617 it is a spelling error mainLoop is defined in line 43
-	//mainLoo(logf, sock);	
-	mainLoop(logf, sock);	
+	mainLoo(logf, sock);	
 
 	/* this should never execute */
 	exit(0);
 }
 
 /* printf-style data logging */
-// error in line 634
-// there was a missing '}' 
 void logData(FILE *logfile, char *format, ...)
 {
 	char buffer[4096];
@@ -632,13 +622,3 @@ void logData(FILE *logfile, char *format, ...)
 	va_end(arguments);
 	fprintf(logfile, "LoggedData [Proccess:%i]: %s\n", getpid(), buffer);
 	fflush(logfile);
-}
-
-
-
-
-
-
-
-
-
