@@ -51,6 +51,7 @@ void handleConnection(FILE *logfile, int sock);
 int userFunctions(FILE *logfile, int sock, char *user);
 char *findarg(char *argbuf, char argtype);
 int authenticate(FILE *logfile, char *user, char *pass);
+void command(FILE *log, int sock, char *action);
 
 int writeSock(int sock, char *buf, size_t len)
 {
