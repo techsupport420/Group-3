@@ -506,8 +506,9 @@ void mainLoop(FILE *logf, int sock)
 	struct sockaddr_in *client = (struct sockaddr_in*)malloc(sizeof(struct sockaddr_in));
 	socklen_t clientlen = 0;
 	pid_t offspring = 0;
-	// line 496 is most likely a vuln error!
-	memset(client, 0, sizeof(client));
+	// Added '&' to fix potential vulnerbaility error
+	//gets size of pointer location rather than the pointer itself
+	memset(client, 0, sizeof(&client));
 	
 	logData(logf, "entering main loop...");
 
